@@ -10,13 +10,17 @@ verbose. This library aims to make jython interop in
 clojure nearly as seamless as basic java interop.
 e
 
-## Usage
+## Usage and Installation
 
-FIXME: write
+To experiment with it:
 
-## Installation
+1. clone the repository
+2. lein deps
+3. lein repl
 
-FIXME: write
+To include as a dependency:
+
+Copy the config section found at http://clojars.org/clojure-python into your dependencies in project.clj.
 
 ## License
 
