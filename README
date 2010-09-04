@@ -1,0 +1,34 @@
+# clojure-python
+
+by Robert P. Levy
+
+Python libraries can be used in clojure by instantiating 
+a jython interpreter via clojure's excellent java interop 
+library functions. However, the way in which python code 
+is wrapped by jython makes interop with python clumsy and 
+verbose. This library aims to make jython interop in 
+clojure nearly as seamless as basic java interop.
+e
+Contents:
+
+src/python.clj  ; the library
+etc/nltk-example/* ; example using the nltk library
+
+
+Note: added project.clj to project so as to enable building with Leiningin as a dependency via Clojars.
+However please note that the included nltk examples will probably require features in Jython 2.5.1,
+the latest version of Jython in mvnrepository is 2.5.0 at the time of this writing.
+
+## Usage
+
+FIXME: write
+
+## Installation
+
+FIXME: write
+
+## License
+
+Copyright (C) 2010 FIXME
+
+Distributed under LGPL.
