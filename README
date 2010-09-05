@@ -20,7 +20,7 @@ To experiment with it:
 
 To include as a dependency:
 
-Copy the config section found at http://clojars.org/clojure-python into your dependencies in project.clj.
+Copy the config section found at http://clojars.org/clojure-python into your dependencies in your project's project.clj.
 
 ## License
 

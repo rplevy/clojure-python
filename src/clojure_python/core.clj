@@ -47,10 +47,11 @@
      `(do (import-fn ~lib ~fun)
           (import-fn ~lib ~@more-funs))))
 
-(defmacro py-fn [lib fun]
+(defmacro py-fn 
   "create a native clojure function applying the python 
   wrapper calls on a python function at the top level of the library
   use this where lambda is preferred over named function"
+  [lib fun]
   `(let [f# (.__finditem__ 
              ~lib 
              ~(name fun))]
@@ -74,28 +75,31 @@
            non-keywords (filter (fn [a] (not (keyword? a))) args)]
        `(call (__ ~class ~@attrs) [~@non-keywords] ~@keywords))))
 
-(defn dir [x]
+(defn dir 
   "it's slightly nicer to call the dir method in this way"
+  [x]
   (seq (.__dir__ x)))
 
-(defn iter [o start end]
+(defn iter
   "Jython sometimes represents things as 'PyObjectDerived', which has no direct method to get their items as a seq"
+  [o start end]
   (for [i (range start end)]
     (.__getitem__ o i)))
 
-(defn java2py [args]
+(defn java2py 
   "to wrap java objects for input as jython, and unwrap jython output as java
-  (thanks to Marc Downie on Clojure list for suggesting this)"
+  (thanks to Marc Downie on Clojure list for suggesting this)"[args]
   (into-array 
    org.python.core.PyObject 
    (map 
     (fn [n] (. org.python.core.Py java2py n)) 
     args)))
 
-(defn call [fun args & key-args]
+(defn call 
   "The first len(args)-len(keywords) members of args[] 
   are plain arguments. The last len(keywords) arguments
   are the values of the keyword arguments."
+  [fun args & key-args]
   (.__tojava__ 
    (if key-args
      (.__call__ fun (java2py args) (into-array java.lang.String key-args))
