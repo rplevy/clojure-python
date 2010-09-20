@@ -3,7 +3,7 @@
   (:import (org.python.util PythonInterpreter)
            (org.python.core.*)))
 
-; instantiate a python interpreter in the python namespace
+;; instantiate a python interpreter in the python namespace
 (def *interp* (new org.python.util.PythonInterpreter))
 
 (defn init 
