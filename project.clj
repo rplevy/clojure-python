@@ -1,4 +1,4 @@
-(defproject clojure-python "0.0.1"
+(defproject clojure-python "0.0.2"
   :description "Improve seamlessness of Clojure Jython interop."
   :dependencies [[org.clojure/clojure "1.1.0"]
                  [org.python/jython "2.5.1"]]
