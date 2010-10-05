@@ -80,11 +80,22 @@
   [x]
   (seq (.__dir__ x)))
 
-(defn iter
-  "Jython sometimes represents things as 'PyObjectDerived', which has no direct method to get their items as a seq"
+(defn pyobj-range
+  "Access PyObjDerived items by range"
   [o start end]
   (for [i (range start end)]
-    (.__getitem__ o i)))
+    (str (.__getitem__ o i))))
+
+(defn pyobj-iterate [pyobj]
+  "Access 'PyObjectDerived' items as a Lazy Seq"
+  (let [iter (.__iter__ pyobj)]
+    (letfn
+     [(do-iter [iter]
+       (when (seq iter)
+         (lazy-seq
+          (cons (str (.__iternext__ iter))
+                (do-iter iter)))))]
+     (do-iter iter))))
 
 (defn java2py 
   "to wrap java objects for input as jython, and unwrap jython output as java

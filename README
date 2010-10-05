@@ -24,7 +24,7 @@ To include as a dependency:
 
 Copy the config section found at http://clojars.org/clojure-python into your dependencies in your project's project.clj.
 
-Important: it will be necessary to include step #2 above (mvn install...) and the 2.5.1 jar itself in any installation instructions for using this as a dependency, until a recent version Jython is made available in the central maven repository.
+Important: it will be necessary to include step #2 above (mvn install...) and the 2.5.1 jar itself in any installation instructions for using this as a dependency, until a recent version of Jython is made available in the central maven repository.
 
 ## License
 
