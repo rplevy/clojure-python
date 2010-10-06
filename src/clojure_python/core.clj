@@ -77,29 +77,25 @@
 
 (defn dir 
   "it's slightly nicer to call the dir method in this way"
-  [x]
-  (seq (.__dir__ x)))
+  [x] (seq (.__dir__ x)))
+
+(defn pyobj-nth
+  "nth item in a 'PyObjectDerived'"
+  [o i] (.__getitem__ o i))
 
 (defn pyobj-range
-  "Access PyObjDerived items by range"
-  [o start end]
-  (for [i (range start end)]
-    (str (.__getitem__ o i))))
+  "access 'PyObjectDerived' items as non-lazy range"
+  [o start end] (for [i (range start end)] (pyobj-nth o i)))
 
-(defn pyobj-iterate [pyobj]
-  "Access 'PyObjectDerived' items as a Lazy Seq"
-  (let [iter (.__iter__ pyobj)]
-    (letfn
-     [(do-iter [iter]
-       (when (seq iter)
-         (lazy-seq
-          (cons (str (.__iternext__ iter))
-                (do-iter iter)))))]
-     (do-iter iter))))
+(defn pyobj-iterate
+  "access 'PyObjectDerived' items as Lazy Seq"
+   [pyobj] (lazy-seq (.__iter__ pyobj)))
 
 (defn java2py 
-  "to wrap java objects for input as jython, and unwrap jython output as java
-  (thanks to Marc Downie on Clojure list for suggesting this)"[args]
+  "to wrap java objects for input as jython, and unwrap
+  Jython output as java (thanks to Marc Downie on Clojure
+  list for suggesting this)"
+  [args]
   (into-array 
    org.python.core.PyObject 
    (map 
