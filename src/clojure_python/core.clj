@@ -36,15 +36,15 @@
   and the others are objects to import from this library"
   ([] nil)
   ([lib] ; import a library
-     `(do (. clojure-python.core/interp exec (str "import " ~(name lib)))
-          (def ~lib (. (. (. clojure-python.core/interp getLocals) 
-                              __getitem__ ~(name lib)) 
-                           __dict__))
+     `(do (.exec *interp* (str "import " ~(name lib)))
+          (def ~lib
+               (-> *interp*
+                   .getLocals
+                   (.__getitem__ ~(name lib))
+                   .__dict__))
           (print ~lib)))
   ([lib object] ; import object from a library
-     `(do (def ~object  (.__finditem__ 
-                         ~lib 
-                         ~(name object))) 
+     `(do (def ~object (.__finditem__ ~lib ~(name object)))
           (print ~object)))
   ([lib object & more-objects] ; import multiple objects
      `(do (py-import ~lib ~object) 
@@ -103,10 +103,8 @@
   "access 'PyObjectDerived' items as Lazy Seq"
    [pyobj] (lazy-seq (.__iter__ pyobj)))
 
-(defn java2py 
-  "to wrap java objects for input as jython, and unwrap
-  Jython output as java (thanks to Marc Downie on Clojure
-  list for suggesting this)"
+(defn- java2py
+  "to wrap java objects for input as jython, and unwrap Jython output as java"
   [args]
   (into-array 
    org.python.core.PyObject 
@@ -114,7 +112,7 @@
     (fn [n] (. org.python.core.Py java2py n)) 
     args)))
 
-(defn call 
+(defn- call 
   "The first len(args)-len(keywords) members of args[] 
   are plain arguments. The last len(keywords) arguments
   are the values of the keyword arguments."
