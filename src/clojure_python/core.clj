@@ -10,7 +10,7 @@
   "this may later take keywords and initialize other things
   for now it is just used to specify python library paths"
   ([libpath]
-     (doto clojure-python.core/*interp* 
+     (doto clojure-python.core/interp 
        (.exec "import sys")
        (.exec (str "sys.path.append('" libpath "')"))))
   ([libpath & more]
@@ -24,8 +24,8 @@
   and the others are objects to import from this library"
   ([] nil)
   ([lib] ; import a library
-     `(do (. clojure-python.core/*interp* exec (str "import " ~(name lib)))
-          (def ~lib (. (. (. clojure-python.core/*interp* getLocals) 
+     `(do (. clojure-python.core/interp exec (str "import " ~(name lib)))
+          (def ~lib (. (. (. clojure-python.core/interp getLocals) 
                               __getitem__ ~(name lib)) 
                            __dict__))
           (print ~lib)))
