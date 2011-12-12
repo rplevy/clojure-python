@@ -1,21 +1,33 @@
 (ns clojure-python.core
-  (:use (clojure.core.*))
   (:import (org.python.util PythonInterpreter)
            (org.python.core.*)))
 
-;; instantiate a python interpreter in the python namespace
-(def interp (new org.python.util.PythonInterpreter))
+(declare ^:dynamic *interp*)
 
-(defn init 
-  "this may later take keywords and initialize other things
-  for now it is just used to specify python library paths"
-  ([libpath]
-     (doto clojure-python.core/interp 
-       (.exec "import sys")
-       (.exec (str "sys.path.append('" libpath "')"))))
-  ([libpath & more]
-     (init libpath)
-     (apply init more))) 
+(defn append-paths!
+  "appends a vector of paths to the python system path"
+  [libpaths]
+  (.exec *interp* "import sys")
+  (doseq [p libpaths]
+    (.exec *interp* (str "sys.path.append('" p "')")))
+  *interp*)
+
+(defn init
+  "Establish a global python interpreter. it is intended to only be called
+   once. Alternatively, only use with-interpreter."
+  [{:keys [libpaths] :as options}]
+  (defonce ^:dynamic
+    ^{:doc "root binding serves as global python interpreter"}
+    *interp*
+    (org.python.util.PythonInterpreter.))
+  (append-paths! libpaths))
+
+(defmacro with-interpreter
+  "Dynamically bind a new python interpreter for the calling context."
+  [{:keys [libpaths] :as options} & body]
+  `(binding [*interp* (org.python.util.PythonInterpreter.)]
+     (append-paths! ~libpaths)
+     ~@body))
 
 (defmacro py-import
   "define a library using the same name it has in python
