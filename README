@@ -2,13 +2,12 @@
 
 by Robert P. Levy
 
-Python libraries can be used in clojure by instantiating 
-a jython interpreter via clojure's excellent java interop 
-library functions. However, the way in which python code 
-is wrapped by jython makes interop with python clumsy and 
-verbose. This library aims to make jython interop in 
-clojure nearly as seamless as basic java interop.
-e
+Python libraries can be used in Clojure by instantiating 
+a Jython interpreter via Clojure's excellent Java interop.
+However, the way in which Python code is wrapped by Jython 
+makes interop with Python clumsy and verbose. This library 
+aims to make Jython interop in Clojure nearly as seamless 
+as basic java interop.
 
 ## Usage and Installation
 
