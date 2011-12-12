@@ -4,7 +4,7 @@
            (org.python.core.*)))
 
 ;; instantiate a python interpreter in the python namespace
-(def *interp* (new org.python.util.PythonInterpreter))
+(def interp (new org.python.util.PythonInterpreter))
 
 (defn init 
   "this may later take keywords and initialize other things
