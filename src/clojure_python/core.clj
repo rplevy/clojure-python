@@ -34,21 +34,21 @@
   if multiple arguments are given, the first is assumed 
   to be a library that has been imported, 
   and the others are objects to import from this library"
-  ([] nil)
   ([lib] ; import a library
      `(do (.exec *interp* (str "import " ~(name lib)))
           (def ~lib
                (-> *interp*
                    .getLocals
                    (.__getitem__ ~(name lib))
-                   .__dict__))
-          (print ~lib)))
-  ([lib object] ; import object from a library
-     `(do (def ~object (.__finditem__ ~lib ~(name object)))
-          (print ~object)))
-  ([lib object & more-objects] ; import multiple objects
-     `(do (py-import ~lib ~object) 
-          (py-import ~lib ~@more-objects))))
+                   .__dict__)))
+     (print ~lib))
+  ([lib & objects] ; import object from a library
+     (cons 'do
+           (mapcat 
+            (fn [obj]
+              `((def ~obj (.__finditem__ ~lib ~(name obj)))
+                (print ~obj)))
+            objects))))
 
 (defmacro import-fn 
   "this is like import but it defines the imported item 
