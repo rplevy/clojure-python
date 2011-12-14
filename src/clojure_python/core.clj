@@ -13,20 +13,21 @@
   *interp*)
 
 (defn init
-  "Establish a global python interpreter. it is intended to only be called
-   once. Alternatively, only use with-interpreter."
+  "Establish a global python interpreter.
+   The init function is only usefully called once.
+   Alternatively, only use with-interpreter."
   [{:keys [libpaths] :as options}]
   (defonce ^:dynamic
     ^{:doc "root binding serves as global python interpreter"}
     *interp*
     (org.python.util.PythonInterpreter.))
-  (append-paths! libpaths))
+  (append-paths libpaths))
 
 (defmacro with-interpreter
   "Dynamically bind a new python interpreter for the calling context."
   [{:keys [libpaths] :as options} & body]
   `(binding [*interp* (org.python.util.PythonInterpreter.)]
-     (append-paths! ~libpaths)
+     (append-paths ~libpaths)
      ~@body))
 
 (defmacro py-import
