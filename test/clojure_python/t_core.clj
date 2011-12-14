@@ -28,11 +28,43 @@
         (base/init {:libpaths ["test/clojure_python/"]})
         (class base/*interp*)))
 
+
+(defmacro with-test-interp [& body]
+  `(base/with-interpreter
+     {:libpaths ["test/clojure_python/"]}
+     ~@body))
+
 (fact "with-interpreter dynamically binds a new interpreter environment"
-      (base/with-interpreter
-        {:libpaths ["test/clojure_python/"]}
-        base/*interp*)
+      (with-test-interp base/*interp*)
       =not=>
-      (base/with-interpreter
-        {:libpaths ["test/clojure_python/"]}
-        base/*interp*))
+      (with-test-interp base/*interp*))
+
+(fact "importing python modules works"
+      (with-test-interp
+        (base/py-import example)
+        (class example))
+      =>
+      org.python.core.PyStringMap)
+
+(fact "importing python functions works"
+      (with-test-interp
+        (base/py-import example)
+        (base/import-fn example hello)
+        (fn? hello))
+      =>
+      true)
+
+(fact "calling python functions works"
+      (with-test-interp
+        (base/py-import example)
+        (base/import-fn example hello)
+        (hello "world"))
+      =>
+      "hello, world how are you."
+
+      (with-test-interp
+        (base/py-import example)
+        ((base/py-fn example hello)
+         "person"))
+      =>
+      "hello, person how are you.")
