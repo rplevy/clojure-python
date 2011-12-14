@@ -108,16 +108,14 @@
   [args]
   (into-array 
    org.python.core.PyObject 
-   (map 
-    (fn [n] (. org.python.core.Py java2py n)) 
-    args)))
+   (map #(.java2py org.python.core.Py %) args)))
 
 (defn- call 
   "The first len(args)-len(keywords) members of args[] 
   are plain arguments. The last len(keywords) arguments
   are the values of the keyword arguments."
   [fun args & key-args]
-  (.__tojava__ 
+  (.__tojava__
    (if key-args
      (.__call__ fun (java2py args) (into-array java.lang.String key-args))
      (.__call__ fun (java2py args)))
