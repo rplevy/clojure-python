@@ -4,7 +4,7 @@
 
 (declare ^:dynamic *interp*)
 
-(defn append-paths!
+(defn append-paths
   "appends a vector of paths to the python system path"
   [libpaths]
   (.exec *interp* "import sys")

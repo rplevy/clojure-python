@@ -4,7 +4,7 @@
 
 (fact "append-paths adds the path to system path"
       (binding [base/*interp* (org.python.util.PythonInterpreter.)]
-        (-> (#'base/append-paths! ["test/clojure_python/"])
+        (-> (#'base/append-paths ["test/clojure_python/"])
             .getLocals
             (.__getitem__ "sys")
             .path
