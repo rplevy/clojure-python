@@ -41,42 +41,41 @@
                (-> *interp*
                    .getLocals
                    (.__getitem__ ~(name lib))
-                   .__dict__)))
-     (print ~lib))
+                   .__dict__))))
   ([lib & objects] ; import object from a library
      (cons 'do
-           (mapcat 
+           (map
             (fn [obj]
-              `((def ~obj (.__finditem__ ~lib ~(name obj)))
-                (print ~obj)))
+              `(def ~obj (.__finditem__ ~lib ~(name obj))))
             objects))))
-
-(defmacro import-fn 
-  "this is like import but it defines the imported item 
-  as a native function that applies the python wrapper calls"
-  ([lib fun] 
-     `(def ~fun (py-fn ~lib ~fun)))
-  ([lib fun & more-funs]
-     `(do (import-fn ~lib ~fun)
-          (import-fn ~lib ~@more-funs))))
 
 (defmacro py-fn 
   "create a native clojure function applying the python 
   wrapper calls on a python function at the top level of the library
   use this where lambda is preferred over named function"
   [lib fun]
-  `(let [f# (.__finditem__ 
-             ~lib 
+  `(let [f# (.__finditem__
+             ~lib
              ~(name fun))]
      (fn [& args#]
        (call f# args#))))
 
-(defmacro __ 
+(defmacro import-fn 
+  "this is like import but it defines the imported item 
+  as a native function that applies the python wrapper calls"
+  [lib fun & funs]
+  (cons 'do
+        (map
+         (fn [fun]
+           `(def ~fun (py-fn ~lib ~fun)))
+         (cons fun funs))))
+
+(defmacro __
   "access attribute of class or attribute of attribute of (and so on) class"
   ([class attr]
      `(.__findattr__ ~class ~(name attr)))
-  ([class attr & more]
-     `(__ (__ ~class ~attr) ~@more)))
+  ([class attr & attrs]
+     `(__ (__ ~class ~attr) ~@attrs)))
 
 (defmacro _> 
   "call attribute as a method
@@ -102,16 +101,16 @@
 
 (defn pyobj-iterate
   "access 'PyObjectDerived' items as Lazy Seq"
-   [pyobj] (lazy-seq (.__iter__ pyobj)))
+  [pyobj] (lazy-seq (.__iter__ pyobj)))
 
-(defn- java2py
+(defn java2py
   "to wrap java objects for input as jython, and unwrap Jython output as java"
   [args]
   (into-array 
    org.python.core.PyObject 
-   (map #(.java2py org.python.core.Py %) args)))
+   (map #(. org.python.core.Py java2py %) args)))
 
-(defn- call 
+(defn call 
   "The first len(args)-len(keywords) members of args[] 
   are plain arguments. The last len(keywords) arguments
   are the values of the keyword arguments."
