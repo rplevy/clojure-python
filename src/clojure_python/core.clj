@@ -1,4 +1,5 @@
 (ns clojure-python.core
+  (:require (clojure [string :as s]))
   (:import (org.python.util PythonInterpreter)
            (org.python.core.*)))
 
@@ -30,24 +31,31 @@
      (append-paths ~libpaths)
      ~@body))
 
-(defmacro py-import
-  "define a library using the same name it has in python
-  if multiple arguments are given, the first is assumed 
-  to be a library that has been imported, 
-  and the others are objects to import from this library"
-  ([lib] ; import a library
-     `(do (.exec *interp* (str "import " ~(name lib)))
-          (def ~lib
-               (-> *interp*
-                   .getLocals
-                   (.__getitem__ ~(name lib))
-                   .__dict__))))
-  ([lib & objects] ; import object from a library
-     (cons 'do
-           (map
-            (fn [obj]
-              `(def ~obj (.__finditem__ ~lib ~(name obj))))
-            objects))))
+(defmacro py-import-lib
+  "import lib
+  defaults to use same name it has in python
+  if it something like foo.bar, the name is bar."
+  [lib & libs]
+  (let [lib-sym (or (last libs) lib)
+        lib-strs (map name (cons lib libs))
+        py-name (s/join "." lib-strs)]
+    `(do (.exec *interp* (str "import " ~py-name))
+         (def ~lib-sym
+              (-> *interp*
+                  .getLocals
+                  (.__getitem__ ~(first lib-strs))
+                  ~@(map (fn [lib#] `(.__getattr__ ~lib#))
+                         (next lib-strs))
+                  .__dict__)))))
+
+(defmacro py-import-obj
+  "import objects from lib"
+  [lib obj & objs]
+  (cons 'do
+        (map
+         (fn [o#]
+           `(def ~o# (.__finditem__ ~lib ~(name o#)))))
+        (cons obj objs)))
 
 (defmacro py-fn 
   "create a native clojure function applying the python 

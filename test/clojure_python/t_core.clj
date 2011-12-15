@@ -41,14 +41,14 @@
 
 (fact "importing python modules works"
       (with-test-interp
-        (base/py-import example)
+        (base/py-import-lib example)
         (class example))
       =>
       org.python.core.PyStringMap)
 
 (fact "importing python functions works"
       (with-test-interp
-        (base/py-import example)
+        (base/py-import-lib example)
         (base/import-fn example hello)
         (fn? hello))
       =>
@@ -56,14 +56,14 @@
 
 (fact "calling python functions works"
       (with-test-interp
-        (base/py-import example)
+        (base/py-import-lib example)
         (base/import-fn example hello)
         (hello "world"))
       =>
       "hello, world how are you."
 
       (with-test-interp
-        (base/py-import example)
+        (base/py-import-lib example)
         ((base/py-fn example hello)
          "person"))
       =>
