@@ -1,6 +1,6 @@
 (ns clojure-python.t-core
-  (:use midje.sweet)
-  (:require [clojure-python.core :as base]))
+  (:require [midje.sweet :refer :all]
+            [clojure-python.core :as base]))
 
 (fact "append-paths adds the path to system path"
       (binding [base/*interp* (org.python.util.PythonInterpreter.)]
