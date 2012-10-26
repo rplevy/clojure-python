@@ -23,4 +23,4 @@ License
 
 Copyright (C) 2010-2012 Robert P. Levy
 
-Distributed under LGPL.
+Distributed under the Eclipse Public License, the same as Clojure.
