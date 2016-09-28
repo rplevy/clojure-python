@@ -52,8 +52,8 @@
   (cons 'do
         (map
          (fn [o#]
-           `(def ~o# (.__finditem__ ~lib ~(name o#)))))
-        (cons obj objs)))
+           `(def ~o# (.__finditem__ ~lib ~(name o#))))
+         (cons obj objs))))
 
 (defmacro py-fn
   "Create a native clojure function applying the python wrapper calls on a python
